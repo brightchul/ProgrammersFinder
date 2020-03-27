@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="search">
+        <input type="text" id="searchInput">
+    </div>
+    <div class="search-result" style="border:1px solid black; padding:10px;"></div>
+     <div id="show"></div>
+</body>
+<script src="hangul_disassemble.js"></script>
+
+<script>
+    const problemArr = [];
+    const show = document.getElementById("show");
+
+    fetch("./programmersProblem.json")
+        .then(res => res.json())
+        .then(obj => {for(const one of obj) problemArr.push(one);});
+
+</script>
+
+<script>
+    // 인풋의 값넣었을때 먼저 분해 찍기
+    const searchInput = document.getElementById("searchInput");
+    const searchResult = document.getElementsByClassName("search-result")[0];
+
+
+    searchInput.addEventListener("keyup", e => {
+        const inputString = e.target.value;
+        const convertString = getConstantVowel(inputString);
+        if(convertString.length < 2) return;
+
+        const similarArr = [];
+        problemArr.forEach(o => 
+            o.title2.indexOf(convertString)> -1 && similarArr.push(o));
+        
+        searchResult.innerHTML = "";
+        similarArr.forEach(o => {
+            const p = document.createElement("p");
+            const a = document.createElement("a");
+            a.innerText = o.title;
+            a.href = o.link;
+            p.appendChild(a);
+            searchResult.appendChild(p);
+        });
+    });
+</script>
+</html>
